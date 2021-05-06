@@ -1,18 +1,21 @@
-<input type="text" maxlength="9" id="caixa_de_texto" placeholder="insira seu CEP"/>
-<button id="botao">Procurar</button>
+<form id="formulario">
+    <input type="text" maxlength="9" id="caixa_de_texto" placeholder="insira seu CEP"/>
+    <button id="botao">Procurar</button>
+</form>
 
 <div id="conteudo"></div>
 
 <script>
-botao = document.getElementById("botao")
 conteudo = document.getElementById("conteudo")
 input = document.getElementById("caixa_de_texto")
+formulario = document.getElementById("formulario")
 
 function isNumeric(value) {
     return /^-?\d+$/.test(value);
 }
 
-function reagir_a_click(){
+function reagir_a_click(evento){
+    evento.preventDefault()
     CEP = input.value.replace("-", "")
 
     if(CEP.length != 8 || isNumeric(CEP) != true){
@@ -29,5 +32,5 @@ function reagir_a_click(){
             })
 }
 
-botao.addEventListener("click", reagir_a_click)
+formulario.addEventListener("submit", reagir_a_click)
 </script>
