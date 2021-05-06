@@ -1,0 +1,33 @@
+<input type="text" maxlength="9" id="caixa_de_texto" value="22451100"/>
+<button id="botao">Procurar</button>
+
+<div id="conteudo"></div>
+
+<script>
+botao = document.getElementById("botao")
+conteudo = document.getElementById("conteudo")
+input = document.getElementById("caixa_de_texto")
+
+function isNumeric(value) {
+    return /^-?\d+$/.test(value);
+}
+
+function reagir_a_click(){
+    CEP = input.value.replace("-", "")
+
+    if(CEP.length != 8 || isNumeric(CEP) != true){
+        conteudo.textContent = "INVALIDO, APRENDA A ESCREVER UM CEP"
+        return
+    }
+
+    fetch('https://brasilapi.com.br/api/cep/v1/' + CEP)
+        .then(function(response) {
+          return response.json();
+        })
+            .then(function(dado) {
+              conteudo.textContent = (dado["street"] + ", " + dado["city"] + ", " + dado["state"])
+            })
+}
+
+botao.addEventListener("click", reagir_a_click)
+</script>
