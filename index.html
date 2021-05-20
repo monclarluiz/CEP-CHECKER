@@ -1,36 +1,114 @@
-<form id="formulario">
-    <input type="text" maxlength="9" id="caixa_de_texto" placeholder="insira seu CEP"/>
-    <button id="botao">Procurar</button>
-</form>
+<html>
+  <head>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        background-color: #5bc0eb;
+        display: grid;
+        place-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      #main {
+        background-color: #fde74c;
+        box-shadow: 0px 0px 40px 12px black;
+        padding: 10px;
+        border-radius: 5px;
+        width: 300px;
+        max-width: 100%;
+      }
+      #formulario {
+        margin: 0;
+        display: flex;
+        gap: 3px;
+        justify-content: space-between;
+        background-color: #211a1e;
+        padding: 5px;
+      }
+      #botao {
+        padding: 3px;
+        border: none;
+      }
+      #conteudo {
+        margin-top: 10px;
+        display: grid;
+        place-items: center;
+        background-color: white;
+        border: 8px;
+        border-style: double;
+        border-color: #9bc53d;
+        padding: 5px;
+        min-height: 5rem;
+        text-align: center;
+        opacity: 1;
+        transition: opacity 0.5s ease-in-out;
+      }
+      #conteudo:empty {
+        margin-top: 0;
+        border: 0;
+        padding: 0;
+        min-height: 0;
+        opacity: 0;
+      }
+      #caixa_de_texto {
+        flex-grow: 3;
+        border: none;
+      }
+      #emoji {
+        text-align: center;
+        margin-bottom: 5rem;
+        font-size: 72px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div id="emoji">🗺️</div>
+      <div id="main">
+        <form id="formulario">
+          <input
+            type="text"
+            maxlength="9"
+            id="caixa_de_texto"
+            placeholder="Insira seu CEP"
+          />
+          <button id="botao">Procurar</button>
+        </form>
 
-<div id="conteudo"></div>
+        <div id="conteudo"></div>
+      </div>
+    </main>
+    <script>
+      conteudo = document.getElementById("conteudo");
+      input = document.getElementById("caixa_de_texto");
+      formulario = document.getElementById("formulario");
 
-<script>
-conteudo = document.getElementById("conteudo")
-input = document.getElementById("caixa_de_texto")
-formulario = document.getElementById("formulario")
+      function isNumeric(value) {
+        return /^-?\d+$/.test(value);
+      }
 
-function isNumeric(value) {
-    return /^-?\d+$/.test(value);
-}
+      function reagir_a_click(evento) {
+        evento.preventDefault();
+        CEP = input.value.replace("-", "");
 
-function reagir_a_click(evento){
-    evento.preventDefault()
-    CEP = input.value.replace("-", "")
+        if (CEP.length != 8 || isNumeric(CEP) != true) {
+          conteudo.textContent = "INVALIDO, APRENDA A ESCREVER UM CEP";
+          return;
+        }
 
-    if(CEP.length != 8 || isNumeric(CEP) != true){
-        conteudo.textContent = "INVALIDO, APRENDA A ESCREVER UM CEP"
-        return
-    }
+        fetch("https://brasilapi.com.br/api/cep/v1/" + CEP)
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (dado) {
+            conteudo.textContent =
+              dado["street"] + ", " + dado["city"] + ", " + dado["state"];
+          });
+      }
 
-    fetch('https://brasilapi.com.br/api/cep/v1/' + CEP)
-        .then(function(response) {
-          return response.json();
-        })
-            .then(function(dado) {
-              conteudo.textContent = (dado["street"] + ", " + dado["city"] + ", " + dado["state"])
-            })
-}
-
-formulario.addEventListener("submit", reagir_a_click)
-</script>
+      formulario.addEventListener("submit", reagir_a_click);
+    </script>
+  </body>
+</html>
